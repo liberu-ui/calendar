@@ -23,12 +23,12 @@
                         </button>
                         <button class="button is-warning has-margin-left-medium"
                             @click="$emit('confirm', update.ThisAndFuture)"
-                            v-if="!event.isLast">
+                            v-if="!event.isLast && !dateChanged">
                             {{ i18n(update._get(update.ThisAndFuture)) }}
                         </button>
                         <button class="button is-danger has-margin-left-medium"
                             @click="$emit('confirm', update.All)"
-                            v-if="event.parentId">
+                            v-if="event.parentId && !dateChanged">
                             {{ i18n(update._get(update.All)) }}
                         </button>
                     </div>
@@ -59,6 +59,11 @@ export default {
         event: {
             type: Object,
             required: true,
+        },
+        dateChanged: {
+            type: Boolean,
+            required: false,
+            default: false,
         },
     },
 

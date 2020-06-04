@@ -14,8 +14,8 @@
             @event-mouse-enter="hovering = $event.id"
             @event-mouse-leave="hovering = null"
             @event-delete="destroy"
-            @event-duration-change="update"
-            @event-drop="update($event.event)"
+            @event-duration-change="vuecalEvent = $event; update()"
+            @event-drop="vuecalEvent = $event; update()"
             :on-event-dblclick="selectEvent"
             :on-event-create="addEvent"
             editable-events
@@ -52,7 +52,8 @@
         </vue-cal>
         <event-confirmation v-if="confirm"
             :event="event"
-            @confirm="confirm($event); confirm = null; event = null"
+            :date-changed="dateChanged"
+            @confirm="confirm($event); confirm = null; vuecalEvent = null"
             @cancel="cancelUpdate"
             @close="cancelUpdate"/>
     </div>
@@ -65,6 +66,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFlag, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import format from '@enso-ui/ui/src/modules/plugins/date-fns/format';
 import EventConfirmation from './EventConfirmation';
+import 'vue-cal/dist/drag-and-drop.js'
+
 
 import 'vue-cal/dist/i18n/ar.js';
 import 'vue-cal/dist/i18n/de.js';
@@ -96,7 +99,7 @@ export default {
 
     data: () => ({
         events: [],
-        event: null,
+        vuecalEvent: null,
         confirm: null,
         hovering: null,
         interval: null,
@@ -105,10 +108,14 @@ export default {
     computed: {
         ...mapState(['enums', 'meta']),
         ...mapGetters('preferences', ['lang']),
+        event() {
+            return this.vuecalEvent?.event;
+        },
         params() {
             if (!this.interval) {
                 return { calendars: this.calendars };
             }
+
             if (this.interval.view === 'month') {
                 return {
                     calendars: this.calendars,
@@ -116,11 +123,20 @@ export default {
                     endDate: `${this.dateFormat(this.interval.lastCellDate)} 23:59:59`,
                 };
             }
+
             return {
                 calendars: this.calendars,
                 startDate: `${this.dateFormat(this.interval.startDate)} 00:00:00`,
                 endDate: `${this.dateFormat(this.interval.endDate)} 23:59:59`,
             };
+        },
+        isFrequent() {
+            return this.event
+                && `${this.event.frequency}` !== this.enums.eventFrequencies.Once;
+        },
+        dateChanged() {
+            return this.vuecalEvent && this.vuecalEvent.oldDate && this.vuecalEvent.newDate
+                && this.dateFormat(this.vuecalEvent.oldDate) !== this.dateFormat(this.vuecalEvent.newDate);
         },
     },
 
@@ -151,27 +167,36 @@ export default {
         addEvent(event) {
             this.$emit('edit-event', event);
         },
-        update($event, updateType = null) {
-            this.event = $event;
-
+        revert() {
+            const index = this.events.findIndex(event => event.id === this.event.id);
+            this.events[index].end = new Date(this.vuecalEvent.originalEvent.end);
+            this.events[index].start = new Date(this.vuecalEvent.originalEvent.start);
+            this.events.splice(index, 1, this.events[index]);
+        },
+        update(updateType = null) {
             if (this.needsConfirmation(updateType)) {
-                this.confirm = updateType => this.update($event, updateType);
+                this.confirm = updateType => this.update(updateType);
                 return;
             }
 
             const payload = {
-                start_time: this.timeFormat($event.start),
-                end_time: this.timeFormat($event.end),
+                start_date: this.dateFormat(this.event.start),
+                end_date: this.dateFormat(this.event.end),
+                start_time: this.timeFormat(this.event.start),
+                end_time: this.timeFormat(this.event.end),
                 updateType,
             };
 
             axios.patch(
-                this.route('core.calendar.events.update', { event: $event.id }),
+                this.route('core.calendar.events.update', { event: this.event.id }),
                 payload,
             ).then(({ data }) => {
                 this.$toastr.success(data.message);
                 this.fetch();
-            }).catch(this.errorHandler);
+            }).catch((e) => {
+                this.revert();
+                this.errorHandler(e);
+            });
         },
         updateInterval(interval) {
             this.interval = interval;
@@ -187,22 +212,23 @@ export default {
             }
             e.stopPropagation();
         },
-        destroy($event, updateType = null) {
-            this.event = $event;
-
+        destroy(event, updateType = null) {
             if (this.needsConfirmation(updateType)) {
-                this.confirm = updateType => this.destroy($event, updateType);
+                this.confirm = updateType => this.destroy(event, updateType);
                 return;
             }
 
             axios.delete(
-                this.route('core.calendar.events.destroy', { event: $event.id }),
+                this.route('core.calendar.events.destroy', { event: event.id }),
                 { params: { updateType } },
-            ).then(this.fetch).catch(this.errorHandler);
+            ).then(({data}) => {
+                this.$toastr.success(data.message);
+                this.fetch();
+            }).catch(this.errorHandler);
         },
         needsConfirmation(updateType) {
             return updateType === null
-                && `${this.event.frequency}` !== this.enums.eventFrequencies.Once;
+                && this.isFrequent;
         },
         dateTimeFormat(daysCount, date) {
             return daysCount > 1
@@ -216,9 +242,9 @@ export default {
             return format(dateTime, 'H:i');
         },
         cancelUpdate() {
-            this.fetch();
+            this.revert();
             this.confirm = null;
-            this.event = null;
+            this.vuecalEvent = null;
         }
     },
 };
