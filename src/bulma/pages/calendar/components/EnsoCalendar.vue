@@ -66,9 +66,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFlag, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import format from '@enso-ui/ui/src/modules/plugins/date-fns/format';
 import EventConfirmation from './EventConfirmation';
+
 import 'vue-cal/dist/drag-and-drop.js'
-
-
 import 'vue-cal/dist/i18n/ar.js';
 import 'vue-cal/dist/i18n/de.js';
 import 'vue-cal/dist/i18n/fr.js';
