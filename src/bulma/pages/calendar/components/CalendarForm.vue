@@ -1,6 +1,5 @@
 <template>
     <modal class="calendar-modal"
-        show
         v-on="$listeners">
         <enso-form class="box has-background-light"
             :path="path"

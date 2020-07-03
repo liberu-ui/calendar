@@ -67,7 +67,7 @@ import { faFlag, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import format from '@enso-ui/ui/src/modules/plugins/date-fns/format';
 import EventConfirmation from './EventConfirmation';
 
-import 'vue-cal/dist/drag-and-drop.js'
+import 'vue-cal/dist/drag-and-drop.js';
 import 'vue-cal/dist/i18n/ar.js';
 import 'vue-cal/dist/i18n/de.js';
 import 'vue-cal/dist/i18n/fr.js';
@@ -85,7 +85,7 @@ export default {
 
     components: { VueCal, EventConfirmation },
 
-    inject: ['errorHandler', 'route', 'i18n'],
+    inject: ['errorHandler', 'route', 'i18n', 'toastr'],
 
     props: {
         date: {
@@ -167,14 +167,14 @@ export default {
             this.$emit('edit-event', event);
         },
         revert() {
-            const index = this.events.findIndex(event => event.id === this.event.id);
+            const index = this.events.findIndex((event) => event.id === this.event.id);
             this.events[index].end = new Date(this.vuecalEvent.originalEvent.end);
             this.events[index].start = new Date(this.vuecalEvent.originalEvent.start);
             this.events.splice(index, 1, this.events[index]);
         },
         update(updateType = null) {
             if (this.needsConfirmation(updateType)) {
-                this.confirm = updateType => this.update(updateType);
+                this.confirm = (updateType) => this.update(updateType);
                 return;
             }
 
@@ -190,7 +190,7 @@ export default {
                 this.route('core.calendar.events.update', { event: this.event.id }),
                 payload,
             ).then(({ data }) => {
-                this.$toastr.success(data.message);
+                this.toastr.success(data.message);
                 this.fetch();
             }).catch((e) => {
                 this.revert();
@@ -213,15 +213,15 @@ export default {
         },
         destroy(event, updateType = null) {
             if (this.needsConfirmation(updateType)) {
-                this.confirm = updateType => this.destroy(event, updateType);
+                this.confirm = (updateType) => this.destroy(event, updateType);
                 return;
             }
 
             axios.delete(
                 this.route('core.calendar.events.destroy', { event: event.id }),
                 { params: { updateType } },
-            ).then(({data}) => {
-                this.$toastr.success(data.message);
+            ).then(({ data }) => {
+                this.toastr.success(data.message);
                 this.fetch();
             }).catch(this.errorHandler);
         },
@@ -244,7 +244,7 @@ export default {
             this.revert();
             this.confirm = null;
             this.vuecalEvent = null;
-        }
+        },
     },
 };
 </script>

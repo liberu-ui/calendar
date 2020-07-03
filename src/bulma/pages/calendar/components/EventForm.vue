@@ -1,6 +1,5 @@
 <template>
     <modal class="event-modal"
-        show
         v-on="$listeners">
         <enso-form class="box has-background-light"
             :path="path"
@@ -115,7 +114,7 @@ export default {
         Modal, EnsoForm, FormField, EnsoDatepicker, Fade, ColorSelect, EventConfirmation,
     },
 
-    inject: ['i18n', 'route'],
+    inject: ['i18n', 'route', 'toastr'],
 
     props: {
         event: {
@@ -174,7 +173,7 @@ export default {
         },
         submit($event, updateType) {
             if (this.needConfirm(updateType)) {
-                this.confirm = updateType => this.submit($event, updateType);
+                this.confirm = (updateType) => this.submit($event, updateType);
                 return;
             }
             this.submitForm({ ...this.$refs.form.formData, updateType });
@@ -184,7 +183,7 @@ export default {
                 this.route('core.calendar.events.update', { event: this.event.id }),
                 params,
             ).then(({ data }) => {
-                this.$toastr.success(data.message);
+                this.toastr.success(data.message);
                 this.$emit('submit');
             }).catch((error) => {
                 const { status, data } = error.response;
