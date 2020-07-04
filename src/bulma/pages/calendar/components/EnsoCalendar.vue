@@ -17,8 +17,10 @@
             @event-duration-change="vuecalEvent = $event; update()"
             @event-drop="vuecalEvent = $event; update()"
             :on-event-dblclick="selectEvent"
-            :on-event-create="addEvent"
+            :on-event-create="setDragedEvent"
+            @event-drag-create="dragedEvent && $emit('edit-event', dragedEvent) && deleteEventFunction()"
             editable-events
+            :drag-to-create-threshold="0"
             v-on="$listeners">
             <template v-slot:today-button>
                 <a class="button is-small">
@@ -102,6 +104,8 @@ export default {
         confirm: null,
         hovering: null,
         interval: null,
+        dragedEvent: null,
+        deleteEventFunction: null,
     }),
 
     computed: {
@@ -163,8 +167,10 @@ export default {
                     .catch(this.errorHandler);
             }
         },
-        addEvent(event) {
-            this.$emit('edit-event', event);
+        setDragedEvent(event, deleteEventFunction) {
+            this.dragedEvent = event;
+            this.deleteEventFunction = deleteEventFunction;
+            return event;
         },
         revert() {
             const index = this.events.findIndex((event) => event.id === this.event.id);
