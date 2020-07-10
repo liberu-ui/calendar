@@ -218,10 +218,10 @@ export default {
             e.stopPropagation();
         },
         destroy(event, updateType = null) {
-            this.vuecalEvent = {event, originalEvent:event};
+            this.vuecalEvent = { event, originalEvent:event };
 
             if (this.needsConfirmation(updateType)) {
-                this.confirm = (updateType) => this.destroy(event, updateType);
+                this.confirm = updateType => this.destroy(event, updateType);
                 return;
             }
 
