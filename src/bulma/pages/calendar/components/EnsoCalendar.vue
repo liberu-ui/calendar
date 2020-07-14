@@ -13,12 +13,12 @@
             @view-change="updateInterval"
             @event-mouse-enter="hovering = $event.id"
             @event-mouse-leave="hovering = null"
-            @event-delete="destroy"
+            @event-delete="dragedEvent === null && destroy($event)"
             @event-duration-change="vuecalEvent = $event; update()"
             @event-drop="vuecalEvent = $event; update()"
             :on-event-dblclick="selectEvent"
             :on-event-create="setDragedEvent"
-            @event-drag-create="dragedEvent && $emit('edit-event', dragedEvent) && deleteEventFunction()"
+            @event-drag-create="eventDragCreated"
             editable-events
             :drag-to-create-threshold="0"
             v-on="$listeners">
@@ -253,6 +253,13 @@ export default {
             this.confirm = null;
             this.vuecalEvent = null;
         },
+        eventDragCreated() {
+            if (this.dragedEvent) {
+                this.$emit('edit-event', this.dragedEvent);
+                this.deleteEventFunction();
+                this.dragedEvent = null;
+            }
+        }
     },
 };
 </script>
