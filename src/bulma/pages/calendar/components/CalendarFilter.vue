@@ -72,6 +72,11 @@
                 </div>
             </div>
         </div>
+        <filter-state :api-version="apiVersion"
+            name="calendarFilters"
+            :filters="filtered"
+            @ready="load"
+            ref="filterState"/>
     </div>
 </template>
 
@@ -83,6 +88,7 @@ import {
     faPlus, faFlag, faArrowsAltH, faCrosshairs,
 } from '@fortawesome/free-solid-svg-icons';
 import 'vue-cal/dist/vuecal.css';
+import { FilterState } from '@enso-ui/filters/renderless';
 import CalendarForm from './CalendarForm.vue';
 
 import('../styles/colors.scss');
@@ -92,25 +98,33 @@ library.add(faPlus, faFlag, faArrowsAltH, faCrosshairs);
 export default {
     name: 'CalendarFilter',
 
-    components: { CalendarForm, VueCal },
+    components: { CalendarForm, VueCal, FilterState },
 
     inject: ['errorHandler', 'i18n', 'route'],
 
     data: () => ({
+        apiVersion: 1.0,
         calendars: [],
         calendar: null,
         selected: [],
+        filtered: {
+            calendars: [],
+        },
     }),
-
-    created() {
-        this.fetch().then(this.selectAll);
-    },
 
     computed: {
         ...mapGetters('preferences', ['lang']),
     },
 
     methods: {
+        load() {
+            this.fetch().then(() => {
+                this.selected = this.calendars.map(({ id }) => id)
+                    .filter(id => !this.filtered.calendars.includes(id));
+
+                this.updateSelection();
+            });
+        },
         fetch() {
             return axios.get(this.route('core.calendar.index'))
                 .then(({ data }) => {
@@ -118,11 +132,10 @@ export default {
                 }).catch(this.errorHandler);
         },
         updateSelection() {
+            this.filtered.calendars = this.calendars.map(({ id }) => id)
+                .filter(id => !this.selected.includes(id));
+
             this.$emit('update-selection', this.selected);
-        },
-        selectAll() {
-            this.selected = this.calendars.map(({ id }) => id);
-            this.updateSelection();
         },
         setCalendar(calendar) {
             this.calendar = calendar;
