@@ -5,7 +5,7 @@
             @close="calendar = null"
             @destroy="destroy"
             v-if="calendar"/>
-        <div class="box has-padding-small raises-on-hover">
+        <div class="box p-1 raises-on-hover">
             <vue-cal class="small-calendar is-paddingless"
                 xsmall
                 today-button

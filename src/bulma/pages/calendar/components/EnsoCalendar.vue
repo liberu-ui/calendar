@@ -38,7 +38,7 @@
                     <b class="has-text-centered">
                         {{ event.title }}
                     </b>
-                    <p class="event-body has-margin-bottom-small"
+                    <p class="event-body mb-1"
                         v-if="event.body"
                         v-html="event.body"/>
                     <div v-if="!event.allDay">

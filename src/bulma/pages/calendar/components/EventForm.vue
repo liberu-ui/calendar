@@ -47,7 +47,7 @@
                                 v-for="(reminder, index) in field.value"
                                 :key="index">
                                 <div class="column is-9 animated fadeIn">
-                                    <p class="has-margin-bottom-small">
+                                    <p class="mb-1">
                                         <enso-datepicker v-model="reminder.scheduled_at"
                                             format="Y-m-d H:i:s"
                                             :alt-format="`${meta.dateFormat} H:i`"
@@ -55,7 +55,7 @@
                                     </p>
                                 </div>
                                 <div class="column">
-                                    <a class="button is-small is-naked has-margin-top-small"
+                                    <a class="button is-small is-naked mt-1"
                                         @click="field.value.splice(index, 1)">
                                         <span class="icon is-small">
                                             <fa icon="minus"/>

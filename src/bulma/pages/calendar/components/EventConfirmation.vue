@@ -20,12 +20,12 @@
                             @click="$emit('confirm', update.OnlyThis)">
                             {{ i18n(update._get(update.OnlyThis)) }}
                         </button>
-                        <button class="button is-warning has-margin-left-medium"
+                        <button class="button is-warning ml-2"
                             @click="$emit('confirm', update.ThisAndFuture)"
                             v-if="!event.isLast && !dateChanged">
                             {{ i18n(update._get(update.ThisAndFuture)) }}
                         </button>
-                        <button class="button is-danger has-margin-left-medium"
+                        <button class="button is-danger ml-2"
                             @click="$emit('confirm', update.All)"
                             v-if="event.parentId && !dateChanged">
                             {{ i18n(update._get(update.All)) }}
