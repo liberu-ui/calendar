@@ -28,7 +28,7 @@
                         <div class="column is-3">
                             <fade>
                                 <a @click="field.value.push(reminderFactory())"
-                                   class="button is-small is-naked has-margin-top-medium is-pulled-right"
+                                   class="button is-small is-naked mt-2 is-pulled-right"
                                    v-if="
                                         field.value.length < 3
                                             && !field.value.some(({ scheduled_at }) => !scheduled_at)
@@ -63,7 +63,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="has-text-centered has-margin-top-medium"
+                            <div class="has-text-centered mt-2"
                                 v-if="field.value.length === 0">
                                 {{ i18n('No reminders yet') }}
                             </div>
