@@ -87,7 +87,7 @@ export default {
 
     components: { VueCal, EventConfirmation },
 
-    inject: ['errorHandler', 'i18n', 'route', 'routeErrorHandler', 'toastr'],
+    inject: ['errorHandler', 'i18n', 'route', 'routerErrorHandler', 'toastr'],
 
     props: {
         date: {
@@ -211,7 +211,7 @@ export default {
         selectEvent(event, e) {
             if (event.route) {
                 this.$router.push(event.route)
-                    .catch(this.routeErrorHandler);
+                    .catch(this.routerErrorHandler);
                 return;
             }
             if (!event.readonly) {
