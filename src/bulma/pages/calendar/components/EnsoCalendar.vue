@@ -87,13 +87,14 @@ export default {
 
     components: { VueCal, EventConfirmation },
 
-    inject: ['errorHandler', 'route', 'i18n', 'toastr'],
+    inject: ['errorHandler', 'i18n', 'route', 'routeErrorHandler', 'toastr'],
 
     props: {
         date: {
             required: true,
         },
         calendars: {
+            type: Array,
             required: true,
         },
     },
@@ -209,7 +210,8 @@ export default {
         },
         selectEvent(event, e) {
             if (event.route) {
-                this.$router.push(event.route);
+                this.$router.push(event.route)
+                    .catch(this.routeErrorHandler);
                 return;
             }
             if (!event.readonly) {
@@ -218,10 +220,10 @@ export default {
             e.stopPropagation();
         },
         destroy(event, updateType = null) {
-            this.vuecalEvent = { event, originalEvent:event };
+            this.vuecalEvent = { event, originalEvent: event };
 
             if (this.needsConfirmation(updateType)) {
-                this.confirm = updateType => this.destroy(event, updateType);
+                this.confirm = (updateType) => this.destroy(event, updateType);
                 return;
             }
 
@@ -259,7 +261,7 @@ export default {
                 this.deleteEventFunction();
                 this.dragedEvent = null;
             }
-        }
+        },
     },
 };
 </script>
