@@ -1,6 +1,7 @@
 <template>
     <div class="calendar-wrapper box is-paddingless raises-on-hover">
-        <vue-cal :time-from="7 * 60"
+        <vue-cal v-bind="$attrs"
+            :time-from="7 * 60"
             :locale="lang"
             :selected-date="date"
             :events="events"
@@ -8,7 +9,6 @@
             today-button
             watch-real-time
             events-count-on-year-view
-            v-bind="$attrs"
             @ready="updateInterval"
             @view-change="updateInterval"
             @event-mouse-enter="hovering = $event.id"
