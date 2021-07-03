@@ -3,9 +3,9 @@
         <label class="label">
             {{ i18n(field.label) }}
         </label>
-        <vue-select v-model="field.value"
+        <vue-select v-bind="field.meta"
+            v-model="field.value"
             :has-error="errors.has(field.name)"
-            v-bind="field.meta"
             @fetch="field.meta.options = $event"
             @input="errors.clear(field.name); $emit('changed')"
             v-on="$listeners">

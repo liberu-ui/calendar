@@ -48,10 +48,10 @@
                                 :key="index">
                                 <div class="column is-9 animated fadeIn">
                                     <p class="mb-1">
-                                        <enso-datepicker v-model="reminder.scheduled_at"
+                                        <enso-datepicker v-bind="field.meta"
+                                            v-model="reminder.scheduled_at"
                                             format="Y-m-d H:i:s"
-                                            :alt-format="`${meta.dateFormat} H:i`"
-                                            v-bind="field.meta"/>
+                                            :alt-format="`${meta.dateFormat} H:i`"/>
                                     </p>
                                 </div>
                                 <div class="column">
