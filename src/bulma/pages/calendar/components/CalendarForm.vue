@@ -6,7 +6,7 @@
             v-on="$listeners"
             ref="form"
             disable-state>
-            <template v-slot:color="{field,errors}">
+            <template #:color="{field,errors}">
                 <color-select
                     :field="field"
                     :errors="errors"

@@ -15,7 +15,7 @@
                 default-view="month"
                 :disable-views="['years', 'year', 'week', 'day']"
                 @cell-focus="$emit('change-date', $event)">
-                <template v-slot:today-button>
+                <template #:today-button>
                     <span class="icon is-small is-clickable is-naked"
                         @click="$emit('change-date', new Date())">
                         <fa icon="crosshairs"
@@ -120,7 +120,7 @@ export default {
         load() {
             this.fetch().then(() => {
                 this.selected = this.calendars.map(({ id }) => id)
-                    .filter(id => !this.filtered.calendars.includes(id));
+                    .filter((id) => !this.filtered.calendars.includes(id));
 
                 this.updateSelection();
             });
@@ -133,7 +133,7 @@ export default {
         },
         updateSelection() {
             this.filtered.calendars = this.calendars.map(({ id }) => id)
-                .filter(id => !this.selected.includes(id));
+                .filter((id) => !this.selected.includes(id));
 
             this.$emit('update-selection', this.selected);
         },

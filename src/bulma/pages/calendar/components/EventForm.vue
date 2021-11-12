@@ -7,21 +7,21 @@
             ref="form"
             disable-state
             @ready="init">
-            <template v-slot:start_date="props">
+            <template #:start_date="props">
                 <form-field v-bind="props"
                     @input="
                         $refs.form.field('end_date').meta.min = $event;
                         $refs.form.field('recurrence_ends_at').meta.min = $event;
                     "/>
             </template>
-            <template v-slot:end_date="props">
+            <template #:end_date="props">
                 <form-field v-bind="props"
                     @input="$refs.form.field('start_date').meta.max = $event;"/>
             </template>
-            <template v-slot:frequency="props">
+            <template #:frequency="props">
                 <form-field v-bind="props" @input="changeFrequency($event)"/>
             </template>
-            <template v-slot:reminders="{ field }">
+            <template #:reminders="{ field }">
                 <div class="field">
                     <label class="label">{{ i18n('Reminders') }}</label>
                     <div class="columns">
@@ -71,10 +71,10 @@
                     </div>
                 </div>
             </template>
-            <template v-slot:calendar_id="{field,errors}">
+            <template #:calendar_id="{field,errors}">
                 <color-select :field="field" :errors="errors"/>
             </template>
-            <template v-slot:actions-right v-if="isEdit">
+            <template #:actions-right v-if="isEdit">
                 <div class="level-right">
                     <div class="button is-success" @click="submit">
                         <span>Update</span>

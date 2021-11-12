@@ -9,7 +9,7 @@
             @fetch="field.meta.options = $event"
             @input="errors.clear(field.name); $emit('changed')"
             v-on="$listeners">
-            <template v-slot:selection="{ selection, selectionBindings, selectionEvents }"
+            <template #:selection="{ selection, selectionBindings, selectionEvents }"
                 :selection-bindings="selectionBindings"
                 :selection-events="selectionEvents">
                 <div v-if="selection">
@@ -17,7 +17,7 @@
                     <span>{{ selection.name }}</span>
                 </div>
             </template>
-            <template v-slot:option="{option}">
+            <template #:option="{option}">
                 <div>
                     <span :class="`calendar-color calendar-${option[colorField]}`"/>
                     <span>{{ option.name }}</span>

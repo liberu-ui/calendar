@@ -22,7 +22,7 @@
             editable-events
             :drag-to-create-threshold="0"
             v-on="$listeners">
-            <template v-slot:today-button>
+            <template #:today-button>
                 <a class="button is-small">
                     <span class="is-bold">
                         {{ i18n('Today') }}
@@ -33,7 +33,7 @@
                     </span>
                 </a>
             </template>
-            <template v-slot:event="{ event, view }">
+            <template #:event="{ event, view }">
                 <div>
                     <b class="has-text-centered">
                         {{ event.title }}
