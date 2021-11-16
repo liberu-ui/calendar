@@ -7,9 +7,8 @@
             v-model="field.value"
             :has-error="errors.has(field.name)"
             @fetch="field.meta.options = $event"
-            @input="errors.clear(field.name); $emit('changed')"
-            v-on="$listeners">
-            <template #:selection="{ selection, selectionBindings, selectionEvents }"
+            @input="errors.clear(field.name); $emit('changed')">
+            <template #selection="{ selection, selectionBindings, selectionEvents }"
                 :selection-bindings="selectionBindings"
                 :selection-events="selectionEvents">
                 <div v-if="selection">
@@ -17,7 +16,7 @@
                     <span>{{ selection.name }}</span>
                 </div>
             </template>
-            <template #:option="{option}">
+            <template #option="{option}">
                 <div>
                     <span :class="`calendar-color calendar-${option[colorField]}`"/>
                     <span>{{ option.name }}</span>

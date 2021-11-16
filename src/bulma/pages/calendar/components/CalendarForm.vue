@@ -1,12 +1,10 @@
 <template>
-    <modal class="calendar-modal"
-        v-on="$listeners">
+    <modal class="calendar-modal"   >
         <enso-form class="box has-background-light"
             :path="path"
-            v-on="$listeners"
             ref="form"
             disable-state>
-            <template #:color="{field,errors}">
+            <template #color="{field,errors}">
                 <color-select
                     :field="field"
                     :errors="errors"

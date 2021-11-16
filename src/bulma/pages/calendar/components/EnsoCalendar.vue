@@ -20,9 +20,8 @@
             :on-event-create="setDragedEvent"
             @event-drag-create="eventDragCreated"
             editable-events
-            :drag-to-create-threshold="0"
-            v-on="$listeners">
-            <template #:today-button>
+            :drag-to-create-threshold="0">
+            <template #today-button>
                 <a class="button is-small">
                     <span class="is-bold">
                         {{ i18n('Today') }}
@@ -33,7 +32,7 @@
                     </span>
                 </a>
             </template>
-            <template #:event="{ event, view }">
+            <template #event="{ event, view }">
                 <div>
                     <b class="has-text-centered">
                         {{ event.title }}

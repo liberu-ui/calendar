@@ -15,7 +15,7 @@
                 default-view="month"
                 :disable-views="['years', 'year', 'week', 'day']"
                 @cell-focus="$emit('change-date', $event)">
-                <template #:today-button>
+                <template #today-button>
                     <span class="icon is-small is-clickable is-naked"
                         @click="$emit('change-date', new Date())">
                         <fa icon="crosshairs"

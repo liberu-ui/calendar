@@ -1,27 +1,25 @@
 <template>
-    <modal class="event-modal"
-        v-on="$listeners">
+    <modal class="event-modal"   >
         <enso-form class="box has-background-light"
             :path="path"
-            v-on="$listeners"
             ref="form"
             disable-state
             @ready="init">
-            <template #:start_date="props">
+            <template #start_date="props">
                 <form-field v-bind="props"
                     @input="
                         $refs.form.field('end_date').meta.min = $event;
                         $refs.form.field('recurrence_ends_at').meta.min = $event;
                     "/>
             </template>
-            <template #:end_date="props">
+            <template #end_date="props">
                 <form-field v-bind="props"
                     @input="$refs.form.field('start_date').meta.max = $event;"/>
             </template>
-            <template #:frequency="props">
+            <template #frequency="props">
                 <form-field v-bind="props" @input="changeFrequency($event)"/>
             </template>
-            <template #:reminders="{ field }">
+            <template #reminders="{ field }">
                 <div class="field">
                     <label class="label">{{ i18n('Reminders') }}</label>
                     <div class="columns">
@@ -71,10 +69,10 @@
                     </div>
                 </div>
             </template>
-            <template #:calendar_id="{field,errors}">
+            <template #calendar_id="{field,errors}">
                 <color-select :field="field" :errors="errors"/>
             </template>
-            <template #:actions-right v-if="isEdit">
+            <template #actions-right v-if="isEdit">
                 <div class="level-right">
                     <div class="button is-success" @click="submit">
                         <span>Update</span>
@@ -173,7 +171,7 @@ export default {
         },
         submit($event, updateType) {
             if (this.needConfirm(updateType)) {
-                this.confirm = (updateType) => this.submit($event, updateType);
+                this.confirm = updateType => this.submit($event, updateType);
                 return;
             }
             this.submitForm({ ...this.$refs.form.formData, updateType });
@@ -185,7 +183,7 @@ export default {
             ).then(({ data }) => {
                 this.toastr.success(data.message);
                 this.$emit('submit');
-            }).catch((error) => {
+            }).catch(error => {
                 const { status, data } = error.response;
 
                 if (status === 422) {
