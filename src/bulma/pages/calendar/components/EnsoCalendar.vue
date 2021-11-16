@@ -144,7 +144,10 @@ export default {
     },
 
     watch: {
-        calendars: 'fetch',
+        calendars: {
+            handler: 'fetch',
+            deep: true,
+        },
     },
 
     mounted() {
@@ -152,7 +155,7 @@ export default {
 
         window.addEventListener('resize', this.resize);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         window.removeEventListener('resize', this.resize);
     },
 
@@ -173,14 +176,14 @@ export default {
             return event;
         },
         revert() {
-            const index = this.events.findIndex((event) => event.id === this.event.id);
+            const index = this.events.findIndex(event => event.id === this.event.id);
             this.events[index].end = new Date(this.vuecalEvent.originalEvent.end);
             this.events[index].start = new Date(this.vuecalEvent.originalEvent.start);
             this.events.splice(index, 1, this.events[index]);
         },
         update(updateType = null) {
             if (this.needsConfirmation(updateType)) {
-                this.confirm = (updateType) => this.update(updateType);
+                this.confirm = updateType => this.update(updateType);
                 return;
             }
 
@@ -198,7 +201,7 @@ export default {
             ).then(({ data }) => {
                 this.toastr.success(data.message);
                 this.fetch();
-            }).catch((e) => {
+            }).catch(e => {
                 this.revert();
                 this.errorHandler(e);
             });
@@ -222,7 +225,7 @@ export default {
             this.vuecalEvent = { event, originalEvent: event };
 
             if (this.needsConfirmation(updateType)) {
-                this.confirm = (updateType) => this.destroy(event, updateType);
+                this.confirm = updateType => this.destroy(event, updateType);
                 return;
             }
 
