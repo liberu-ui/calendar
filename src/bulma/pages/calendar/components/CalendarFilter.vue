@@ -82,6 +82,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import VueCal from 'vue-cal';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -98,7 +99,9 @@ library.add(faPlus, faFlag, faArrowsAltH, faCrosshairs);
 export default {
     name: 'CalendarFilter',
 
-    components: { CalendarForm, VueCal, FilterState },
+    components: {
+        Fa, CalendarForm, VueCal, FilterState,
+    },
 
     inject: ['errorHandler', 'i18n', 'route'],
 
@@ -120,7 +123,7 @@ export default {
         load() {
             this.fetch().then(() => {
                 this.selected = this.calendars.map(({ id }) => id)
-                    .filter((id) => !this.filtered.calendars.includes(id));
+                    .filter(id => !this.filtered.calendars.includes(id));
 
                 this.updateSelection();
             });
@@ -133,7 +136,7 @@ export default {
         },
         updateSelection() {
             this.filtered.calendars = this.calendars.map(({ id }) => id)
-                .filter((id) => !this.selected.includes(id));
+                .filter(id => !this.selected.includes(id));
 
             this.$emit('update-selection', this.selected);
         },
@@ -153,7 +156,7 @@ export default {
         destroy() {
             this.fetch().then(() => {
                 const index = this.selected
-                    .findIndex((id) => id === this.calendar.id);
+                    .findIndex(id => id === this.calendar.id);
 
                 this.selected.splice(index, 1);
                 this.calendar = null;

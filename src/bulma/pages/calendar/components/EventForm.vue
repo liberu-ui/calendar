@@ -1,5 +1,5 @@
 <template>
-    <modal class="event-modal"   >
+    <modal class="event-modal">
         <enso-form class="box has-background-light"
             :path="path"
             ref="form"
@@ -93,6 +93,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { EnsoForm, FormField } from '@enso-ui/forms/bulma';
 import { Modal } from '@enso-ui/modal/bulma';
 import { EnsoDatepicker } from '@enso-ui/datepicker/bulma';
@@ -109,7 +110,14 @@ export default {
     name: 'EventForm',
 
     components: {
-        Modal, EnsoForm, FormField, EnsoDatepicker, Fade, ColorSelect, EventConfirmation,
+        Fa,
+        Modal,
+        EnsoForm,
+        FormField,
+        EnsoDatepicker,
+        Fade,
+        ColorSelect,
+        EventConfirmation,
     },
 
     inject: ['i18n', 'route', 'toastr'],

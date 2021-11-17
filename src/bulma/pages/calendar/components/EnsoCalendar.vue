@@ -62,6 +62,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import VueCal from 'vue-cal';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFlag, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
@@ -84,7 +85,7 @@ library.add(faFlag, faArrowsAltH);
 export default {
     name: 'EnsoCalendar',
 
-    components: { VueCal, EventConfirmation },
+    components: { Fa, VueCal, EventConfirmation },
 
     inject: ['errorHandler', 'i18n', 'route', 'routerErrorHandler', 'toastr'],
 
