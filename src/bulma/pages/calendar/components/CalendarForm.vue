@@ -1,5 +1,5 @@
 <template>
-    <modal class="calendar-modal"   >
+    <modal class="calendar-modal">
         <enso-form class="box has-background-light"
             :path="path"
             ref="form"
