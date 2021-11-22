@@ -44,7 +44,7 @@
                             <div class="columns"
                                 v-for="(reminder, index) in field.value"
                                 :key="index">
-                                <div class="column is-9 animated fadeIn">
+                                <div class="column is-9 animate__animated animate__fadeIn">
                                     <p class="mb-1">
                                         <enso-datepicker v-bind="field.meta"
                                             v-model="reminder.scheduled_at"
@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import 'animate.css';
 import { mapState } from 'vuex';
 import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { EnsoForm, FormField } from '@enso-ui/forms/bulma';
