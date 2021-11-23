@@ -44,14 +44,16 @@
                             <div class="columns"
                                 v-for="(reminder, index) in field.value"
                                 :key="index">
-                                <div class="column is-9 animate__animated animate__fadeIn">
-                                    <p class="mb-1">
-                                        <enso-datepicker v-bind="field.meta"
-                                            v-model="reminder.scheduled_at"
-                                            format="Y-m-d H:i:s"
-                                            :alt-format="`${meta.dateFormat} H:i`"/>
-                                    </p>
-                                </div>
+                                <fade>
+                                    <div class="column is-9">
+                                        <p class="mb-1">
+                                            <enso-datepicker v-bind="field.meta"
+                                                v-model="reminder.scheduled_at"
+                                                format="Y-m-d H:i:s"
+                                                :alt-format="`${meta.dateFormat} H:i`"/>
+                                        </p>
+                                    </div>
+                                </fade>
                                 <div class="column">
                                     <a class="button is-small is-naked mt-1"
                                         @click="field.value.splice(index, 1)">
@@ -92,7 +94,6 @@
 </template>
 
 <script>
-import 'animate.css';
 import { mapState } from 'vuex';
 import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { EnsoForm, FormField } from '@enso-ui/forms/bulma';
@@ -111,14 +112,14 @@ export default {
     name: 'EventForm',
 
     components: {
-        Fa,
-        Modal,
-        EnsoForm,
-        FormField,
-        EnsoDatepicker,
-        Fade,
         ColorSelect,
+        EnsoDatepicker,
+        EnsoForm,
         EventConfirmation,
+        Fa,
+        Fade,
+        FormField,
+        Modal,
     },
 
     inject: ['i18n', 'route', 'toastr'],
