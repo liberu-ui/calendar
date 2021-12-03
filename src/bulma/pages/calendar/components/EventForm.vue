@@ -131,6 +131,8 @@ export default {
         },
     },
 
+    emits: ['submit'],
+
     data: () => ({
         timeFormat: 'H:i',
         confirm: null,

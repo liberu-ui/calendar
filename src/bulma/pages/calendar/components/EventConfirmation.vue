@@ -66,6 +66,8 @@ export default {
         },
     },
 
+    emits: ['cancel', 'confirm'],
+
     computed: {
         ...mapState(['enums']),
         update() {

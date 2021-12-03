@@ -105,6 +105,8 @@ export default {
 
     inject: ['errorHandler', 'i18n', 'route'],
 
+    emits: ['change-date', 'update-selection'],
+
     data: () => ({
         apiVersion: 1.0,
         calendars: [],

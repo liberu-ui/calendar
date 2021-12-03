@@ -50,6 +50,8 @@ export default {
             default: 'color',
         },
     },
+
+    emits: ['changed'],
 };
 </script>
 

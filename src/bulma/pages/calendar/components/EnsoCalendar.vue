@@ -99,6 +99,8 @@ export default {
         },
     },
 
+    emits: ['edit-event'],
+
     data: () => ({
         events: [],
         vuecalEvent: null,
