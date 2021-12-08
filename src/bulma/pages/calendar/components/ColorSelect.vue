@@ -7,7 +7,7 @@
             v-model="field.value"
             :has-error="errors.has(field.name)"
             @fetch="field.meta.options = $event"
-            @input="errors.clear(field.name); $emit('changed')">
+            @update:modelValue="errors.clear(field.name); $emit('changed')">
             <template #selection="{ selection, selectionBindings, selectionEvents }"
                 :selection-bindings="selectionBindings"
                 :selection-events="selectionEvents">
