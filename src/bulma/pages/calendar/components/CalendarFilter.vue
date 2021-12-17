@@ -108,7 +108,7 @@ export default {
     emits: ['change-date', 'update-selection'],
 
     data: () => ({
-        apiVersion: 1.0,
+        apiVersion: 2,
         calendars: [],
         calendar: null,
         selected: [],
