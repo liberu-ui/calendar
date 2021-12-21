@@ -12,7 +12,7 @@
                 :locale="lang"
                 :time="false"
                 hide-view-selector
-                default-view="month"
+                active-view="month"
                 :disable-views="['years', 'year', 'week', 'day']"
                 @cell-focus="$emit('change-date', $event)">
                 <template #today-button>
