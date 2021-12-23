@@ -87,7 +87,9 @@ export default {
 
     components: { Fa, VueCal, EventConfirmation },
 
-    inject: ['errorHandler', 'i18n', 'route', 'routerErrorHandler', 'toastr'],
+    inject: [
+        'errorHandler', 'http', 'i18n', 'route', 'routerErrorHandler', 'toastr',
+    ],
 
     props: {
         date: {
@@ -168,7 +170,7 @@ export default {
         },
         fetch() {
             if (this.calendars) {
-                axios.get(this.route('core.calendar.events.index'), { params: this.params })
+                this.http.get(this.route('core.calendar.events.index'), { params: this.params })
                     .then(({ data }) => (this.events = data))
                     .catch(this.errorHandler);
             }
@@ -198,7 +200,7 @@ export default {
                 updateType,
             };
 
-            axios.patch(
+            this.http.patch(
                 this.route('core.calendar.events.update', { event: this.event.id }),
                 payload,
             ).then(({ data }) => {
@@ -232,7 +234,7 @@ export default {
                 return;
             }
 
-            axios.delete(
+            this.http.delete(
                 this.route('core.calendar.events.destroy', { event: event.id }),
                 { params: { updateType } },
             ).then(({ data }) => {

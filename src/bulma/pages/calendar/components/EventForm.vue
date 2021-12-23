@@ -4,6 +4,8 @@
             :path="path"
             ref="form"
             disable-state
+            @destroy="$emit('destroy')"
+            @submit="$emit('submit', $event)"
             @ready="init">
             <template #start_date="props">
                 <form-field v-bind="props"
@@ -123,7 +125,7 @@ export default {
         Modal,
     },
 
-    inject: ['i18n', 'route', 'toastr'],
+    inject: ['i18n', 'http', 'route', 'toastr'],
 
     props: {
         event: {
@@ -132,7 +134,7 @@ export default {
         },
     },
 
-    emits: ['submit'],
+    emits: ['destroy', 'submit'],
 
     data: () => ({
         timeFormat: 'H:i',
@@ -157,10 +159,12 @@ export default {
     methods: {
         init() {
             console.log('ev f init')
-            this.$refs.form.field('start_date').value = this.date(this.event.start);
-            this.$refs.form.field('start_time').value = this.time(this.event.start);
-            this.$refs.form.field('end_date').value = this.date(this.event.end);
-            this.$refs.form.field('end_time').value = this.time(this.event.end);
+            this.$nextTick(() => {
+                this.$refs.form.field('start_date').value = this.date(this.event.start);
+                this.$refs.form.field('start_time').value = this.time(this.event.start);
+                this.$refs.form.field('end_date').value = this.date(this.event.end);
+                this.$refs.form.field('end_time').value = this.time(this.event.end);
+            });
         },
         reminderFactory() {
             return {
@@ -191,7 +195,7 @@ export default {
             this.submitForm({ ...this.$refs.form.formData, updateType });
         },
         submitForm(params) {
-            axios.patch(
+            this.http.patch(
                 this.route('core.calendar.events.update', { event: this.event.id }),
                 params,
             ).then(({ data }) => {

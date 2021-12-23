@@ -3,7 +3,9 @@
         <enso-form class="box has-background-light"
             :path="path"
             ref="form"
-            disable-state>
+            disable-state
+            @destroy="$emit('destroy')"
+            @submit="$emit('submit', $event)">
             <template #color="{field,errors}">
                 <color-select
                     :field="field"
@@ -37,6 +39,8 @@ export default {
             required: true,
         },
     },
+
+    emits: ['destroy', 'submit'],
 
     computed: {
         ...mapState(['meta']),

@@ -103,7 +103,7 @@ export default {
         Fa, CalendarForm, VueCal, FilterState,
     },
 
-    inject: ['errorHandler', 'i18n', 'route'],
+    inject: ['errorHandler', 'http', 'i18n', 'route'],
 
     emits: ['change-date', 'update-selection'],
 
@@ -131,7 +131,7 @@ export default {
             });
         },
         fetch() {
-            return axios.get(this.route('core.calendar.index'))
+            return this.http.get(this.route('core.calendar.index'))
                 .then(({ data }) => {
                     this.calendars = data;
                 }).catch(this.errorHandler);
