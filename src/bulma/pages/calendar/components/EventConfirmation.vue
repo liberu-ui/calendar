@@ -43,8 +43,6 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFlag, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from '@enso-ui/modal/bulma';
 
-import('../styles/colors.scss');
-
 library.add(faFlag, faArrowsAltH);
 
 export default {
@@ -76,3 +74,7 @@ export default {
     },
 };
 </script>
+
+<style lang="scss">
+    @import '../styles/colors.scss';
+</style>

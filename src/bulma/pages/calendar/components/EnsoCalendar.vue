@@ -33,20 +33,20 @@
                     </span>
                 </a>
             </template>
-            <template #event="{ event, view }">
+            <template #event="{ event: item }">
                 <div>
                     <b class="has-text-centered">
-                        {{ event.title }}
+                        {{ item.title }}
                     </b>
                     <p class="event-body mb-1"
-                        v-if="event.body"
-                        v-html="event.body"/>
-                    <div v-if="!event.allDay">
+                        v-if="item.body"
+                        v-html="item.body"/>
+                    <div v-if="!item.allDay">
                         <p class="has-text-centered"
-                            v-if="hovering === event.id">
-                                {{ dateTimeFormat(event.daysCount,event.start) }}
+                            v-if="hovering === item.id">
+                                {{ dateTimeFormat(item.daysCount,item.start) }}
                                 <fa icon="arrows-alt-h"/>
-                                {{ dateTimeFormat(event.daysCount,event.end) }}
+                                {{ dateTimeFormat(item.daysCount,item.end) }}
                         </p>
                     </div>
                 </div>
@@ -68,18 +68,16 @@ import VueCal from 'vue-cal';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFlag, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import format from '@enso-ui/ui/src/modules/plugins/date-fns/format';
-import EventConfirmation from './EventConfirmation';
+import EventConfirmation from './EventConfirmation.vue';
 
-import 'vue-cal/dist/drag-and-drop.js';
-import 'vue-cal/dist/i18n/ar.js';
-import 'vue-cal/dist/i18n/de.js';
-import 'vue-cal/dist/i18n/fr.js';
-import 'vue-cal/dist/i18n/hu.js';
-import 'vue-cal/dist/i18n/nl.js';
-import 'vue-cal/dist/i18n/ro.js';
-import 'vue-cal/dist/i18n/es.js';
-
-import('../styles/colors.scss');
+import 'vue-cal/dist/drag-and-drop';
+import 'vue-cal/dist/i18n/ar';
+import 'vue-cal/dist/i18n/de';
+import 'vue-cal/dist/i18n/fr';
+import 'vue-cal/dist/i18n/hu';
+import 'vue-cal/dist/i18n/nl';
+import 'vue-cal/dist/i18n/ro';
+import 'vue-cal/dist/i18n/es';
 
 library.add(faFlag, faArrowsAltH);
 
@@ -96,6 +94,7 @@ export default {
 
     props: {
         date: {
+            type: [Date, null],
             required: true,
         },
         calendars: {
@@ -147,7 +146,8 @@ export default {
         },
         dateChanged() {
             return this.vuecalEvent && this.vuecalEvent.oldDate && this.vuecalEvent.newDate
-                && this.dateFormat(this.vuecalEvent.oldDate) !== this.dateFormat(this.vuecalEvent.newDate);
+                && this.dateFormat(this.vuecalEvent.oldDate)
+                    !== this.dateFormat(this.vuecalEvent.newDate);
         },
     },
 
@@ -277,6 +277,8 @@ export default {
 </script>
 
 <style lang="scss">
+    @import '../styles/colors.scss';
+
     .calendar-wrapper {
         height: 100%;
         .vuecal {

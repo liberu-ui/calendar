@@ -44,19 +44,21 @@
             </div>
         </div>
         <div class="level is-marginless calendar-item"
-            v-for="calendar in calendars"
-            :key="calendar.id">
+            v-for="item in calendars"
+            :key="item.id">
             <div class="level-left">
                 <div class="level-item">
                     <label class="checkbox">
                         <input class="is-hidden"
                             v-model="selected"
                             type="checkbox"
-                            :value="calendar.id"
+                            :value="item.id"
                             @change="updateSelection">
                         <span class="calendar-color"
-                            :class="`calendar-${selected.includes(calendar.id) ? calendar.color : 'gray'}`"/>
-                            {{ i18n(calendar.name) }}
+                            :class="`calendar-${selected.includes(item.id)
+                            ? item.color
+                            : 'gray'}`"/>
+                            {{ i18n(item.name) }}
                     </label>
                 </div>
             </div>
@@ -64,8 +66,8 @@
                 <div class="level-item">
                     <a class="button is-naked">
                         <span class="icon"
-                            @click="setCalendar(calendar)"
-                            v-if="!calendar.readonly">
+                            @click="setCalendar(item)"
+                            v-if="!item.readonly">
                             <fa icon="pencil-alt"/>
                         </span>
                     </a>
@@ -91,8 +93,6 @@ import {
 import 'vue-cal/dist/vuecal.css';
 import { FilterState } from '@enso-ui/filters/renderless';
 import CalendarForm from './CalendarForm.vue';
-
-import('../styles/colors.scss');
 
 library.add(faPlus, faFlag, faArrowsAltH, faCrosshairs);
 
@@ -170,6 +170,8 @@ export default {
 </script>
 
 <style lang="scss">
+    @import '../styles/colors.scss';
+
     .small-calendar {
         height: 290px;
     }

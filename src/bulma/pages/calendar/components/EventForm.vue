@@ -30,10 +30,8 @@
                             <fade>
                                 <a @click="field.value.push(reminderFactory())"
                                    class="button is-small is-naked mt-2 is-pulled-right"
-                                   v-if="
-                                        field.value.length < 3
-                                            && !field.value.some(({ scheduled_at }) => !scheduled_at)
-                                    ">
+                                   v-if="field.value.length < 3
+                                        && !field.value.some(({ scheduled_at }) => !scheduled_at)">
                                     <span class="icon is-small">
                                         <fa icon="plus"/>
                                     </span>
@@ -75,7 +73,9 @@
                 </div>
             </template>
             <template #calendar_id="{field,errors}">
-                <color-select :field="field" :errors="errors"/>
+                <color-select
+                    :field="field"
+                    :errors="errors"/>
             </template>
             <template #actions-right v-if="isEdit">
                 <div class="level-right">
@@ -158,7 +158,6 @@ export default {
 
     methods: {
         init() {
-            console.log('ev f init')
             this.$nextTick(() => {
                 this.$refs.form.field('start_date').value = this.date(this.event.start);
                 this.$refs.form.field('start_time').value = this.time(this.event.start);
