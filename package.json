@@ -1,6 +1,6 @@
 {
   "name": "@enso-ui/calendar",
-  "version": "4.0.17",
+  "version": "4.0.18",
   "description": "Basic calendar package",
   "main": "src/bulma/pages/calendar/Index.vue",
   "scripts": {
