@@ -9,18 +9,18 @@
             @ready="init">
             <template #start_date="props">
                 <form-field v-bind="props"
-                    @update:modelValue="
+                    @update:model-value="
                         $refs.form.field('end_date').meta.min = $event;
                         $refs.form.field('recurrence_ends_at').meta.min = $event;
                     "/>
             </template>
             <template #end_date="props">
                 <form-field v-bind="props"
-                    @update:modelValue="$refs.form.field('start_date').meta.max = $event;"/>
+                    @update:model-value="$refs.form.field('start_date').meta.max = $event;"/>
             </template>
             <template #frequency="props">
                 <form-field v-bind="props"
-                    @update:modelValue="changeFrequency($event)"/>
+                    @update:model-value="changeFrequency($event)"/>
             </template>
             <template #reminders="{ field }">
                 <div class="field">

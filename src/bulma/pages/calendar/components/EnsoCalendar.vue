@@ -1,5 +1,6 @@
 <template>
-    <div class="calendar-wrapper box is-paddingless raises-on-hover">
+    <div class="calendar-wrapper box is-paddingless raises-on-hover"
+        :class="$attrs.class">
         <vue-cal v-bind="$attrs"
             :time-from="7 * 60"
             :locale="lang"
@@ -90,6 +91,8 @@ export default {
     inject: [
         'errorHandler', 'http', 'i18n', 'route', 'routerErrorHandler', 'toastr',
     ],
+
+    inheritAttrs: false,
 
     props: {
         date: {
