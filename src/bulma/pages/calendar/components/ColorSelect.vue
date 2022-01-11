@@ -5,19 +5,18 @@
         </label>
         <vue-select v-bind="field.meta"
             v-model="field.value"
+            :http="http"
+            :i18n="i18n"
             :has-error="errors.has(field.name)"
             @fetch="field.meta.options = $event"
-            @input="errors.clear(field.name); $emit('changed')"
-            v-on="$listeners">
-            <template v-slot:selection="{ selection, selectionBindings, selectionEvents }"
-                :selection-bindings="selectionBindings"
-                :selection-events="selectionEvents">
+            @update:model-value="errors.clear(field.name); $emit('changed')">
+            <template #selection="{ selection }">
                 <div v-if="selection">
                     <span :class="`calendar-color calendar-${selection[colorField]}`"/>
                     <span>{{ selection.name }}</span>
                 </div>
             </template>
-            <template v-slot:option="{option}">
+            <template #option="{option}">
                 <div>
                     <span :class="`calendar-color calendar-${option[colorField]}`"/>
                     <span>{{ option.name }}</span>
@@ -35,7 +34,7 @@ export default {
 
     components: { VueSelect },
 
-    inject: ['i18n', 'route'],
+    inject: ['http', 'i18n', 'route'],
 
     props: {
         field: {
@@ -51,6 +50,8 @@ export default {
             default: 'color',
         },
     },
+
+    emits: ['changed'],
 };
 </script>
 

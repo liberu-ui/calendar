@@ -43,7 +43,7 @@ export default {
         this.hideFooter();
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
         this.showFooter();
     },
 

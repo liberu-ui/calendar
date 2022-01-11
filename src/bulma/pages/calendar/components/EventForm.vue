@@ -1,27 +1,28 @@
 <template>
-    <modal class="event-modal"
-        v-on="$listeners">
+    <modal class="event-modal">
         <enso-form class="box has-background-light"
             :path="path"
-            v-on="$listeners"
             ref="form"
             disable-state
+            @destroy="$emit('destroy')"
+            @submit="$emit('submit', $event)"
             @ready="init">
-            <template v-slot:start_date="props">
+            <template #start_date="props">
                 <form-field v-bind="props"
-                    @input="
+                    @update:model-value="
                         $refs.form.field('end_date').meta.min = $event;
                         $refs.form.field('recurrence_ends_at').meta.min = $event;
                     "/>
             </template>
-            <template v-slot:end_date="props">
+            <template #end_date="props">
                 <form-field v-bind="props"
-                    @input="$refs.form.field('start_date').meta.max = $event;"/>
+                    @update:model-value="$refs.form.field('start_date').meta.max = $event;"/>
             </template>
-            <template v-slot:frequency="props">
-                <form-field v-bind="props" @input="changeFrequency($event)"/>
+            <template #frequency="props">
+                <form-field v-bind="props"
+                    @update:model-value="changeFrequency($event)"/>
             </template>
-            <template v-slot:reminders="{ field }">
+            <template #reminders="{ field }">
                 <div class="field">
                     <label class="label">{{ i18n('Reminders') }}</label>
                     <div class="columns">
@@ -29,10 +30,8 @@
                             <fade>
                                 <a @click="field.value.push(reminderFactory())"
                                    class="button is-small is-naked mt-2 is-pulled-right"
-                                   v-if="
-                                        field.value.length < 3
-                                            && !field.value.some(({ scheduled_at }) => !scheduled_at)
-                                    ">
+                                   v-if="field.value.length < 3
+                                        && !field.value.some(({ scheduled_at }) => !scheduled_at)">
                                     <span class="icon is-small">
                                         <fa icon="plus"/>
                                     </span>
@@ -46,14 +45,16 @@
                             <div class="columns"
                                 v-for="(reminder, index) in field.value"
                                 :key="index">
-                                <div class="column is-9 animated fadeIn">
-                                    <p class="mb-1">
-                                        <enso-datepicker v-bind="field.meta"
-                                            v-model="reminder.scheduled_at"
-                                            format="Y-m-d H:i:s"
-                                            :alt-format="`${meta.dateFormat} H:i`"/>
-                                    </p>
-                                </div>
+                                <fade>
+                                    <div class="column is-9">
+                                        <p class="mb-1">
+                                            <enso-datepicker v-bind="field.meta"
+                                                v-model="reminder.scheduled_at"
+                                                format="Y-m-d H:i:s"
+                                                :alt-format="`${meta.dateFormat} H:i`"/>
+                                        </p>
+                                    </div>
+                                </fade>
                                 <div class="column">
                                     <a class="button is-small is-naked mt-1"
                                         @click="field.value.splice(index, 1)">
@@ -71,10 +72,12 @@
                     </div>
                 </div>
             </template>
-            <template v-slot:calendar_id="{field,errors}">
-                <color-select :field="field" :errors="errors"/>
+            <template #calendar_id="{field,errors}">
+                <color-select
+                    :field="field"
+                    :errors="errors"/>
             </template>
-            <template v-slot:actions-right v-if="isEdit">
+            <template #actions-right v-if="isEdit">
                 <div class="level-right">
                     <div class="button is-success" @click="submit">
                         <span>Update</span>
@@ -95,6 +98,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { EnsoForm, FormField } from '@enso-ui/forms/bulma';
 import { Modal } from '@enso-ui/modal/bulma';
 import { EnsoDatepicker } from '@enso-ui/datepicker/bulma';
@@ -111,10 +115,17 @@ export default {
     name: 'EventForm',
 
     components: {
-        Modal, EnsoForm, FormField, EnsoDatepicker, Fade, ColorSelect, EventConfirmation,
+        ColorSelect,
+        EnsoDatepicker,
+        EnsoForm,
+        EventConfirmation,
+        Fa,
+        Fade,
+        FormField,
+        Modal,
     },
 
-    inject: ['i18n', 'route', 'toastr'],
+    inject: ['i18n', 'http', 'route', 'toastr'],
 
     props: {
         event: {
@@ -122,6 +133,8 @@ export default {
             required: true,
         },
     },
+
+    emits: ['destroy', 'submit'],
 
     data: () => ({
         timeFormat: 'H:i',
@@ -145,10 +158,12 @@ export default {
 
     methods: {
         init() {
-            this.$refs.form.field('start_date').value = this.date(this.event.start);
-            this.$refs.form.field('start_time').value = this.time(this.event.start);
-            this.$refs.form.field('end_date').value = this.date(this.event.end);
-            this.$refs.form.field('end_time').value = this.time(this.event.end);
+            this.$nextTick(() => {
+                this.$refs.form.field('start_date').value = this.date(this.event.start);
+                this.$refs.form.field('start_time').value = this.time(this.event.start);
+                this.$refs.form.field('end_date').value = this.date(this.event.end);
+                this.$refs.form.field('end_time').value = this.time(this.event.end);
+            });
         },
         reminderFactory() {
             return {
@@ -173,19 +188,19 @@ export default {
         },
         submit($event, updateType) {
             if (this.needConfirm(updateType)) {
-                this.confirm = (updateType) => this.submit($event, updateType);
+                this.confirm = updateType => this.submit($event, updateType);
                 return;
             }
             this.submitForm({ ...this.$refs.form.formData, updateType });
         },
         submitForm(params) {
-            axios.patch(
+            this.http.patch(
                 this.route('core.calendar.events.update', { event: this.event.id }),
                 params,
             ).then(({ data }) => {
                 this.toastr.success(data.message);
                 this.$emit('submit');
-            }).catch((error) => {
+            }).catch(error => {
                 const { status, data } = error.response;
 
                 if (status === 422) {

@@ -1,5 +1,6 @@
 <template>
-    <div class="calendar-wrapper box is-paddingless raises-on-hover">
+    <div class="calendar-wrapper box is-paddingless raises-on-hover"
+        :class="$attrs.class">
         <vue-cal v-bind="$attrs"
             :time-from="7 * 60"
             :locale="lang"
@@ -20,9 +21,8 @@
             :on-event-create="setDragedEvent"
             @event-drag-create="eventDragCreated"
             editable-events
-            :drag-to-create-threshold="0"
-            v-on="$listeners">
-            <template v-slot:today-button>
+            :drag-to-create-threshold="0">
+            <template #today-button>
                 <a class="button is-small">
                     <span class="is-bold">
                         {{ i18n('Today') }}
@@ -33,20 +33,20 @@
                     </span>
                 </a>
             </template>
-            <template v-slot:event="{ event, view }">
+            <template #event="{ event: item }">
                 <div>
                     <b class="has-text-centered">
-                        {{ event.title }}
+                        {{ item.title }}
                     </b>
                     <p class="event-body mb-1"
-                        v-if="event.body"
-                        v-html="event.body"/>
-                    <div v-if="!event.allDay">
+                        v-if="item.body"
+                        v-html="item.body"/>
+                    <div v-if="!item.allDay">
                         <p class="has-text-centered"
-                            v-if="hovering === event.id">
-                                {{ dateTimeFormat(event.daysCount,event.start) }}
+                            v-if="hovering === item.id">
+                                {{ dateTimeFormat(item.daysCount,item.start) }}
                                 <fa icon="arrows-alt-h"/>
-                                {{ dateTimeFormat(event.daysCount,event.end) }}
+                                {{ dateTimeFormat(item.daysCount,item.end) }}
                         </p>
                     </div>
                 </div>
@@ -63,34 +63,38 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import VueCal from 'vue-cal';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFlag, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import format from '@enso-ui/ui/src/modules/plugins/date-fns/format';
-import EventConfirmation from './EventConfirmation';
+import EventConfirmation from './EventConfirmation.vue';
 
-import 'vue-cal/dist/drag-and-drop.js';
-import 'vue-cal/dist/i18n/ar.js';
-import 'vue-cal/dist/i18n/de.js';
-import 'vue-cal/dist/i18n/fr.js';
-import 'vue-cal/dist/i18n/hu.js';
-import 'vue-cal/dist/i18n/nl.js';
-import 'vue-cal/dist/i18n/ro.js';
-import 'vue-cal/dist/i18n/es.js';
-
-import('../styles/colors.scss');
+import 'vue-cal/dist/drag-and-drop';
+import 'vue-cal/dist/i18n/ar';
+import 'vue-cal/dist/i18n/de';
+import 'vue-cal/dist/i18n/fr';
+import 'vue-cal/dist/i18n/hu';
+import 'vue-cal/dist/i18n/nl';
+import 'vue-cal/dist/i18n/ro';
+import 'vue-cal/dist/i18n/es';
 
 library.add(faFlag, faArrowsAltH);
 
 export default {
     name: 'EnsoCalendar',
 
-    components: { VueCal, EventConfirmation },
+    components: { Fa, VueCal, EventConfirmation },
 
-    inject: ['errorHandler', 'i18n', 'route', 'routerErrorHandler', 'toastr'],
+    inject: [
+        'errorHandler', 'http', 'i18n', 'route', 'routerErrorHandler', 'toastr',
+    ],
+
+    inheritAttrs: false,
 
     props: {
         date: {
+            type: [Date, null],
             required: true,
         },
         calendars: {
@@ -98,6 +102,8 @@ export default {
             required: true,
         },
     },
+
+    emits: ['edit-event'],
 
     data: () => ({
         events: [],
@@ -140,12 +146,16 @@ export default {
         },
         dateChanged() {
             return this.vuecalEvent && this.vuecalEvent.oldDate && this.vuecalEvent.newDate
-                && this.dateFormat(this.vuecalEvent.oldDate) !== this.dateFormat(this.vuecalEvent.newDate);
+                && this.dateFormat(this.vuecalEvent.oldDate)
+                    !== this.dateFormat(this.vuecalEvent.newDate);
         },
     },
 
     watch: {
-        calendars: 'fetch',
+        calendars: {
+            handler: 'fetch',
+            deep: true,
+        },
     },
 
     mounted() {
@@ -153,7 +163,7 @@ export default {
 
         window.addEventListener('resize', this.resize);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         window.removeEventListener('resize', this.resize);
     },
 
@@ -163,7 +173,7 @@ export default {
         },
         fetch() {
             if (this.calendars) {
-                axios.get(this.route('core.calendar.events.index'), { params: this.params })
+                this.http.get(this.route('core.calendar.events.index'), { params: this.params })
                     .then(({ data }) => (this.events = data))
                     .catch(this.errorHandler);
             }
@@ -174,14 +184,14 @@ export default {
             return event;
         },
         revert() {
-            const index = this.events.findIndex((event) => event.id === this.event.id);
+            const index = this.events.findIndex(event => event.id === this.event.id);
             this.events[index].end = new Date(this.vuecalEvent.originalEvent.end);
             this.events[index].start = new Date(this.vuecalEvent.originalEvent.start);
             this.events.splice(index, 1, this.events[index]);
         },
         update(updateType = null) {
             if (this.needsConfirmation(updateType)) {
-                this.confirm = (updateType) => this.update(updateType);
+                this.confirm = updateType => this.update(updateType);
                 return;
             }
 
@@ -193,13 +203,13 @@ export default {
                 updateType,
             };
 
-            axios.patch(
+            this.http.patch(
                 this.route('core.calendar.events.update', { event: this.event.id }),
                 payload,
             ).then(({ data }) => {
                 this.toastr.success(data.message);
                 this.fetch();
-            }).catch((e) => {
+            }).catch(e => {
                 this.revert();
                 this.errorHandler(e);
             });
@@ -223,11 +233,11 @@ export default {
             this.vuecalEvent = { event, originalEvent: event };
 
             if (this.needsConfirmation(updateType)) {
-                this.confirm = (updateType) => this.destroy(event, updateType);
+                this.confirm = updateType => this.destroy(event, updateType);
                 return;
             }
 
-            axios.delete(
+            this.http.delete(
                 this.route('core.calendar.events.destroy', { event: event.id }),
                 { params: { updateType } },
             ).then(({ data }) => {
@@ -267,6 +277,8 @@ export default {
 </script>
 
 <style lang="scss">
+    @import '../styles/colors.scss';
+
     .calendar-wrapper {
         height: 100%;
         .vuecal {

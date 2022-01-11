@@ -12,10 +12,10 @@
                 :locale="lang"
                 :time="false"
                 hide-view-selector
-                default-view="month"
+                active-view="month"
                 :disable-views="['years', 'year', 'week', 'day']"
                 @cell-focus="$emit('change-date', $event)">
-                <template v-slot:today-button>
+                <template #today-button>
                     <span class="icon is-small is-clickable is-naked"
                         @click="$emit('change-date', new Date())">
                         <fa icon="crosshairs"
@@ -44,19 +44,21 @@
             </div>
         </div>
         <div class="level is-marginless calendar-item"
-            v-for="calendar in calendars"
-            :key="calendar.id">
+            v-for="item in calendars"
+            :key="item.id">
             <div class="level-left">
                 <div class="level-item">
                     <label class="checkbox">
                         <input class="is-hidden"
                             v-model="selected"
                             type="checkbox"
-                            :value="calendar.id"
+                            :value="item.id"
                             @change="updateSelection">
                         <span class="calendar-color"
-                            :class="`calendar-${selected.includes(calendar.id) ? calendar.color : 'gray'}`"/>
-                            {{ i18n(calendar.name) }}
+                            :class="`calendar-${selected.includes(item.id)
+                            ? item.color
+                            : 'gray'}`"/>
+                            {{ i18n(item.name) }}
                     </label>
                 </div>
             </div>
@@ -64,8 +66,8 @@
                 <div class="level-item">
                     <a class="button is-naked">
                         <span class="icon"
-                            @click="setCalendar(calendar)"
-                            v-if="!calendar.readonly">
+                            @click="setCalendar(item)"
+                            v-if="!item.readonly">
                             <fa icon="pencil-alt"/>
                         </span>
                     </a>
@@ -82,6 +84,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import VueCal from 'vue-cal';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -91,19 +94,21 @@ import 'vue-cal/dist/vuecal.css';
 import { FilterState } from '@enso-ui/filters/renderless';
 import CalendarForm from './CalendarForm.vue';
 
-import('../styles/colors.scss');
-
 library.add(faPlus, faFlag, faArrowsAltH, faCrosshairs);
 
 export default {
     name: 'CalendarFilter',
 
-    components: { CalendarForm, VueCal, FilterState },
+    components: {
+        Fa, CalendarForm, VueCal, FilterState,
+    },
 
-    inject: ['errorHandler', 'i18n', 'route'],
+    inject: ['errorHandler', 'http', 'i18n', 'route'],
+
+    emits: ['change-date', 'update-selection'],
 
     data: () => ({
-        apiVersion: 1.0,
+        apiVersion: 2,
         calendars: [],
         calendar: null,
         selected: [],
@@ -126,7 +131,7 @@ export default {
             });
         },
         fetch() {
-            return axios.get(this.route('core.calendar.index'))
+            return this.http.get(this.route('core.calendar.index'))
                 .then(({ data }) => {
                     this.calendars = data;
                 }).catch(this.errorHandler);
@@ -153,7 +158,7 @@ export default {
         destroy() {
             this.fetch().then(() => {
                 const index = this.selected
-                    .findIndex((id) => id === this.calendar.id);
+                    .findIndex(id => id === this.calendar.id);
 
                 this.selected.splice(index, 1);
                 this.calendar = null;
@@ -165,6 +170,8 @@ export default {
 </script>
 
 <style lang="scss">
+    @import '../styles/colors.scss';
+
     .small-calendar {
         height: 290px;
     }

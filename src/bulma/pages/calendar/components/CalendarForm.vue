@@ -1,12 +1,12 @@
 <template>
-    <modal class="calendar-modal"
-        v-on="$listeners">
+    <modal class="calendar-modal">
         <enso-form class="box has-background-light"
             :path="path"
-            v-on="$listeners"
             ref="form"
-            disable-state>
-            <template v-slot:color="{field,errors}">
+            disable-state
+            @destroy="$emit('destroy')"
+            @submit="$emit('submit', $event)">
+            <template #color="{field,errors}">
                 <color-select
                     :field="field"
                     :errors="errors"
@@ -39,6 +39,8 @@ export default {
             required: true,
         },
     },
+
+    emits: ['destroy', 'submit'],
 
     computed: {
         ...mapState(['meta']),

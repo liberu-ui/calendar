@@ -1,5 +1,5 @@
 <template>
-    <modal v-on="$listeners">
+    <modal>
         <div class="box">
             <h5 class="subtitle is-5">
                 {{ i18n("Update") }}
@@ -43,8 +43,6 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFlag, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from '@enso-ui/modal/bulma';
 
-import('../styles/colors.scss');
-
 library.add(faFlag, faArrowsAltH);
 
 export default {
@@ -66,6 +64,8 @@ export default {
         },
     },
 
+    emits: ['cancel', 'confirm'],
+
     computed: {
         ...mapState(['enums']),
         update() {
@@ -74,3 +74,7 @@ export default {
     },
 };
 </script>
+
+<style lang="scss">
+    @import '../styles/colors.scss';
+</style>
