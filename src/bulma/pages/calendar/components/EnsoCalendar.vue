@@ -70,15 +70,6 @@ import { faFlag, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import format from '@enso-ui/ui/src/modules/plugins/date-fns/format';
 import EventConfirmation from './EventConfirmation.vue';
 
-import 'vue-cal/dist/drag-and-drop';
-import 'vue-cal/dist/i18n/ar';
-import 'vue-cal/dist/i18n/de';
-import 'vue-cal/dist/i18n/fr';
-import 'vue-cal/dist/i18n/hu';
-import 'vue-cal/dist/i18n/nl';
-import 'vue-cal/dist/i18n/ro';
-import 'vue-cal/dist/i18n/es';
-
 library.add(faFlag, faArrowsAltH);
 
 export default {
