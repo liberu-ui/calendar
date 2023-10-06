@@ -99,13 +99,13 @@
 <script>
 import { mapState } from 'vuex';
 import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
-import { EnsoForm, FormField } from '@enso-ui/forms/bulma';
-import { Modal } from '@enso-ui/modal/bulma';
-import { EnsoDatepicker } from '@enso-ui/datepicker/bulma';
+import { EnsoForm, FormField } from '@liberu-ui/forms/bulma';
+import { Modal } from '@liberu-ui/modal/bulma';
+import { EnsoDatepicker } from '@liberu-ui/datepicker/bulma';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUserClock, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
-import { Fade } from '@enso-ui/transitions';
-import format from '@enso-ui/ui/src/modules/plugins/date-fns/format';
+import { Fade } from '@liberu-ui/transitions';
+import format from '@liberu-ui/ui/src/modules/plugins/date-fns/format';
 import ColorSelect from './ColorSelect.vue';
 import EventConfirmation from './EventConfirmation.vue';
 

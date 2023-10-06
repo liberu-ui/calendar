@@ -18,8 +18,8 @@
 
 <script>
 import { mapState } from 'vuex';
-import { EnsoForm } from '@enso-ui/forms/bulma';
-import { Modal } from '@enso-ui/modal/bulma';
+import { EnsoForm } from '@liberu-ui/forms/bulma';
+import { Modal } from '@liberu-ui/modal/bulma';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faMinus, faPlus, faUserClock } from '@fortawesome/free-solid-svg-icons';
 import ColorSelect from './ColorSelect.vue';

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { VueSelect } from '@enso-ui/select/bulma';
+import { VueSelect } from '@liberu-ui/select/bulma';
 
 export default {
     name: 'ColorSelect',
